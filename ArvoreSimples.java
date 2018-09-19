@@ -1,5 +1,6 @@
 import java.util.Iterator;
 import java.util.Vector;
+import java.lang.Math;
 public class Arvore
 {
 	//Atributos da arvore
@@ -84,36 +85,43 @@ public class Arvore
 			return 1 + profundidade(v.parent());
 	}
 	/** Retorna a altura da �rvore */
-	public int height()
-	{
+	public int height(No v){
 		// M�todo que serve de exerc�cio
-		return 0;
+    if(isExternal(v)){//Se o nó nao tem filhos não tem altura
+      return 0;
+    }
+    int h=0;
+    Iterator ite = v.children(); //passamos todos os filhos do nó V para o iterator
+    while(ite.hasNext()){//enquanto existir filhos
+        h = Math.max(h,height((No) ite.next()));//a altura vai ser o maximo da recursividade da função height() de todos os filhos
+    }
+		return h+1;//a altura é o resultado da função max + 1
 	}
 	public void preOrderElement(Vector e,No v){
-		e.add(v.element());
-		Iterator<No> w = v.children(); 
-		while(w.hasNext())
-			preOrderElement(e, w.next());
+		e.add(v.element());//adiciona o elemento do no para o vector
+		Iterator<No> w = v.children();// Interator vai receber todos os filhos do nó v
+		while(w.hasNext())//Enquanto tiver filho
+			preOrderElement(e, w.next());//chama a função com o proximo filho
 	}
 	public void preOrderNo(Vector e,No v){
-		e.add(v);
-		Iterator<No> w = v.children(); 
-		while(w.hasNext())
-			preOrderNo(e, w.next());
+		e.add(v);//adiciona o no para o vector
+		Iterator<No> w = v.children(); // Interator vai receber todos os filhos do nó v
+		while(w.hasNext())//Enquanto tiver filho
+			preOrderNo(e, w.next());//chama a função com o proximo filho
 	}
 	/** Retorna um iterator com os elementos armazenados na �rvore */
 	public Iterator elements()
 	{
-        	Vector v = new Vector<Object>();
-        	preOrderElement(v, raiz);
-		return v.iterator();
+        	Vector v = new Vector<Object>();//Criamos um vetor de objetos ja que queremos os elementos dos nós
+        	preOrderElement(v, raiz);//chamamos a função preOrder para ordenar
+		return v.iterator();//retornamos o iterator com os elementos da arvore
 	}
 	/** Retorna um iterator com as posi��es (n�s) da �rvore */
 	public Iterator Nos()
 	{
-		Vector v = new Vector<No>();
-        	preOrderNo(v, raiz);
-		return v.iterator();
+		Vector v = new Vector<No>();//Criamos um vetor de Nós ja que queremos os nós
+        	preOrderNo(v, raiz);//Ordenamos
+		return v.iterator();//retornamos o iterator do vetor de nós
 	}
 	/** Retorna o n�mero de n�s da �rvore
 	 */
