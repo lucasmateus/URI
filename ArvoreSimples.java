@@ -1,83 +1,76 @@
 import java.util.Iterator;
 import java.util.Vector;
-public class ArvoreSimples implements ArvoreGenerica
+public class Arvore
 {
-	//Atributos da árvore
-	No raiz;
-	int tamanho;
+	//Atributos da arvore
+	  No raiz;
+    int tamanho;
 	//Construtor
-	public ArvoreSimples(Object o)//Construtor
+	public Arvore(Object o)
 	{
-		raiz = new No(null, o);//raiz não tem pai
-		tamanho = 1;
+		raiz = new No(null, o);
+        tamanho = 1;
 	}
-	/** Retorna a raiz da árvore */
+	/** Retorna a raiz da arvore */
 	public No root()
 	{
 		return raiz;
 	}
-	/** Retorna o nó pai de um nó */
+	/** Retorna o no pai de um no */
 	public No parent(No v)
 	{
-		return (v.parent());//pai do nó
+		return (v.parent());
 	}
 
-	/** retorna os filhos de um nó */
+	/** retorna os filhos de um no */
 	public Iterator children(No v)
 	{
 		return v.children();
 	}
-	/** Testa se um nó é interno */
+	/** Testa se um no o interno */
 	public boolean isInternal(No v)
 	{
 		return (v.childrenNumber() > 0);
 	}
-	/** Testa se um nó é externo*/
+	/** Testa se um no o externo*/
 	public boolean isExternal(No v)
 	{
 		return (v.childrenNumber() == 0);
 	}
-	/** Testa se um nó é a raiz */
+	/** Testa se um no o a raiz */
 	public boolean isRoot(No v)
 	{
 		return v == raiz;
 	}
-	/** Adiciona um filho a um nó */
+	/** Adiciona um filho a um no */
 	public void addChild(No v, Object o)
 	{
 		No novo = new No(v, o);
 		v.addChild(novo);
 		tamanho++;
 	}
-	/** Remove um nó
-	 *  Só pode remover nós externos e que tenham um pai (não seja raiz)
+	/** Remove um no
+	 *  S� pode remover n�s externos e que tenham um pai (n�o seja raiz)
 	*/
-	public Object remove(No v) throws InvalidNóException
+	public Object remove(No v) throws IndexOutOfBoundsException
 	{
 		No pai = v.parent();
 		if (pai != null || isExternal(v))
 			pai.removeChild(v);
 		else
-			throw new InvalidNóException();
+			throw new IndexOutOfBoundsException();
 		Object o = v.element();
 		tamanho--;
 		return o;
 	}
-	/** Troca dois elementos de posição */
+	/** Troca dois elementos de posi��o */
 	public void swapElements(No v, No w)
 	{
-		/*Método que serve de exercício
-		 * Este método deverá fazer com que o objeto
-		 * que estava na posição v fique na posição w
-		 * e fazer com que o objeto que estava na posição w
-		 * fique na posição v
-		 */  
-		Object novo = new Object();
-		novo = v.element();
-		v.setElement(w.element());
-		w.setElement(novo);		
+		Object o = v.element();
+        v.setElement(w.element());
+        w.setElement(o);
 	}
-	/** Retorna a profundidade de um nó */
+	/** Retorna a profundidade de um n� */
 	public int depth(No v)
 	{
 		int profundidade = profundidade(v);
@@ -90,32 +83,45 @@ public class ArvoreSimples implements ArvoreGenerica
 		else
 			return 1 + profundidade(v.parent());
 	}
-	/** Retorna a altura da árvore */
+	/** Retorna a altura da �rvore */
 	public int height()
 	{
-		// Método que serve de exercício
-		int altura = 0;
-		return altura;
+		// M�todo que serve de exerc�cio
+		return 0;
 	}
-	/** Retorna um iterator com os elementos armazenados na árvore */
+	public void preOrderElement(Vector e,No v){
+		e.add(v.element());
+		Iterator<No> w = v.children(); 
+		while(w.hasNext())
+			preOrderElement(e, w.next());
+	}
+	public void preOrderNo(Vector e,No v){
+		e.add(v);
+		Iterator<No> w = v.children(); 
+		while(w.hasNext())
+			preOrderNo(e, w.next());
+	}
+	/** Retorna um iterator com os elementos armazenados na �rvore */
 	public Iterator elements()
 	{
-		// Método não implementados --- Coleguinha fique a vontade para fazê-los
-		return null;
+        	Vector v = new Vector<Object>();
+        	preOrderElement(v, raiz);
+		return v.iterator();
 	}
-	/** Retorna um iterator com as posições (nós) da árvore */
+	/** Retorna um iterator com as posi��es (n�s) da �rvore */
 	public Iterator Nos()
 	{
-		// Método não implementados --- Coleguinha fique a vontade para fazê-los
-		return null;
+		Vector v = new Vector<No>();
+        	preOrderNo(v, raiz);
+		return v.iterator();
 	}
-	/** Retorna o número de nós da árvore
+	/** Retorna o n�mero de n�s da �rvore
 	 */
 	public int size()
 	{
-		return this.tamanho;
+		return tamanho;
 	}
-	/** Retorna se a ávore está vazia. Sempre vai ser falso, pois não permitimos remover a raiz
+	/** Retorna se a �vore est� vazia. Sempre vai ser falso, pois n�o permitimos remover a raiz
 	 */
 	public boolean isEmpty()
 	{
@@ -123,50 +129,9 @@ public class ArvoreSimples implements ArvoreGenerica
 	}
 	public Object replace(No v, Object o)
 	{
-		// Método de exercício
-		Object antigoElemento = v.element();
-		v.setElement(o);
-		return antigoElemento;
+        Object temp = v.element();
+        v.setElement(o);
+		return temp;
 	}
-	/* Início da classe aninhada para armazenar o nó*/
-	private class No
-	{
-		private Object o;
-		private No pai;
-		private Vector filhos = new Vector();
-		public No(No pai, Object o)
-		{
-			this.pai = pai;
-			this.o = o;
-		}
-		public Object element()
-		{
-			return this.o;
-		}
-		public No parent()
-		{
-			return this.pai;
-		}
-		public void setElement(Object o)
-		{
-			this.o = o;
-		}
-		public void addChild(No o)
-		{
-			filhos.add(o);
-		}
-		public void removeChild(No o)
-		{
-			filhos.remove(o);
-		}
-		public int childrenNumber()
-		{
-			return filhos.size();
-		}
-		public Iterator children()
-		{
-			return filhos.iterator();
-		}
-	}
-	/* Fim da classe aninhada para armazenar o nó */
+	
 }
